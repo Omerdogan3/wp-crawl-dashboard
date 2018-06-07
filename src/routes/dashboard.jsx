@@ -1,5 +1,6 @@
 import Dashboard from "views/Dashboard/Dashboard";
 import UserProfile from "views/UserProfile/UserProfile";
+import Importer from "views/Importer/Importer";
 import TableList from "views/TableList/TableList";
 import Typography from "views/Typography/Typography";
 import Icons from "views/Icons/Icons";
@@ -18,7 +19,7 @@ const dashboardRoutes = [
     path: "/importer",
     name: "Importer",
     icon: "pe-7s-rocket",
-    component: UserProfile
+    component: Importer
   },
   {
     path: "/user-profile",
