@@ -110,11 +110,11 @@ class Importer extends Component {
 		}
 	};
 
-	makeRequest = async (padding) => {
+	makeRequest = async (padding, callback) => {
 		this.setState({
 			isRequested: true
 		})
-		axios.get(util.format('https://wpcrawlapi.herokuapp.com/%s/%s%s/%s', 
+		axios.get(util.format('https://wpcrawlapi.herokuapp.com/%s/%s/%s/%s', 
 				this.state.selectedWebsite , this.state.inputWebsite, 1, padding
 			))
 		.then((response) => {
@@ -124,12 +124,15 @@ class Importer extends Component {
 				importedWebsites:newArray,
 				isRequested: false
 			})
-			console.log(this.state.importedWebsites);
-			console.log(util.format('https://wpcrawlapi.herokuapp.com/%s/%s%s/%s', 
-			this.state.selectedWebsite , this.state.inputWebsite, this.state.howMany, padding
+			// console.log(this.state.importedWebsites)
+			console.log(util.format('https://wpcrawlapi.herokuapp.com/%s/%s/%s/%s', 
+			this.state.selectedWebsite , this.state.inputWebsite, 1, padding
 		));
+
+		callback(padding);
 		}).catch(function (error) {
 			console.log(error);
+			callback(padding);
 		});
 	}
 
