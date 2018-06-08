@@ -104,7 +104,7 @@ class Dashboard extends Component {
                 content={
                   <div className="table-full-width">
                     <table className="table">
-                      <Tasks />
+                      
                     </table>
                   </div>
                 }

@@ -11,17 +11,15 @@ export class Tasks extends Component {
       [target.name]: target.checked
     });
   };
+
+  // handleRemove = (index) => {
+  //   console.log(index)
+  //   this.props.importedWebsites.splice(index, 1);
+  // }
+
   render() {
-    const edit = <Tooltip id="edit_tooltip">Edit Task</Tooltip>;
-    const remove = <Tooltip id="remove_tooltip">Remove</Tooltip>;
-    const tasks_title = [
-      'Sign contract for "What are conference organizers afraid of?"',
-      "Lines From Great Russian Literature? Or E-mails From My Boss?",
-      "Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroi",
-      "Create 4 Invisible User Experiences you Never Knew About",
-      'Read "Following makes Medium better"',
-      "Unfollow 5 enemies from twitter"
-    ];
+    // const remove = <Tooltip id="remove_tooltip">Remove</Tooltip>;
+    const tasks_title = this.props.importedWebsites;
     var tasks = [];
     var number;
     for (var i = 0; i < tasks_title.length; i++) {
@@ -31,23 +29,10 @@ export class Tasks extends Component {
           <td>
             <Checkbox
               number={number}
-              isChecked={i === 1 || i === 2 ? true : false}
+              isChecked={true}
             />
           </td>
           <td>{tasks_title[i]}</td>
-          <td className="td-actions text-right">
-            <OverlayTrigger placement="top" overlay={edit}>
-              <Button bsStyle="info" simple type="button" bsSize="xs">
-                <i className="fa fa-edit" />
-              </Button>
-            </OverlayTrigger>
-
-            <OverlayTrigger placement="top" overlay={remove}>
-              <Button bsStyle="danger" simple type="button" bsSize="xs">
-                <i className="fa fa-times" />
-              </Button>
-            </OverlayTrigger>
-          </td>
         </tr>
       );
     }

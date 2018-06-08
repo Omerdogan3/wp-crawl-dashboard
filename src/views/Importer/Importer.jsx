@@ -19,6 +19,14 @@ import Button from "components/CustomButton/CustomButton.jsx";
 import avatar from "assets/img/faces/face-3.jpg";
 import axios from 'axios';
 
+import { Tasks } from "components/Tasks/Tasks.jsx";
+
+
+import {myWebsites} from '../../myData/myWebsites';
+import checkIfValidInput from '../../helpers/checkIfValidInput';
+
+const util = require('util');
+
 class Importer extends Component {
 	constructor(props){
     super(props);
@@ -26,7 +34,11 @@ class Importer extends Component {
 			selectedWebsite:'',
 			inputWebsite: '',
 			inputDisabled: false,
-			isAlert: false
+			isAlert: false,
+			isRequested: false,
+			howMany: '',
+			padding: '',
+			importedWebsites: []
 		};
 	}
 
@@ -40,6 +52,14 @@ class Importer extends Component {
 	handleInputValue = (event) => {
     this.setState({inputWebsite: event.target.value});
 	}
+
+	handleHowMany = (event) => {
+    this.setState({howMany: event.target.value});
+	}
+
+	handlePadding = (event) => {
+    this.setState({padding: event.target.value});
+	}
 	
 	_handleKeyPress = (event) => {
 		if(event.key === 'Enter'){
@@ -47,6 +67,10 @@ class Importer extends Component {
 		}
 	}
 	// =======================Handlers=======================
+
+	componentDidMount = () => {
+		
+	}
 
 	displayAlert = () => {
 		return (
@@ -58,11 +82,14 @@ class Importer extends Component {
 	}
 
 	importable = () => {
-		if(this.state.selectedWebsite !== '' && this.is_url(this.state.inputWebsite)){
+		if(checkIfValidInput(this.state.selectedWebsite, this.state.inputWebsite, this.state.howMany, this.state.padding)){
 			//Set state yerine api cagirirken replace edilmis halini cagir.	
 			this.setState({
 				inputWebsite: this.state.inputWebsite.replace(/(^\w+:|^)\/\//, ''),
 				isAlert: false
+			},()=>{
+				// this.makeRequest();
+				this.insertRequests(0)
 			})
 		}else{
 			this.setState({
@@ -71,19 +98,44 @@ class Importer extends Component {
 		}
 	}
 
+	insertRequests = (i) => {
+		let padding = parseInt(this.state.padding) + parseInt(i);
+		if(i< this.state.howMany) {
+			this.makeRequest(padding, (result)=>{
+				console.log(padding);
+				this.insertRequests(i+1);
+			});
+		}else{
+			console.log("Done!")
+		}
+	};
 
-	is_url =(str) =>{
-  	const regexp =  /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
-			if (regexp.test(str)){
-				
-				return true;
-			}else{
-				
-				return false;
-			}
+	makeRequest = async (padding) => {
+		this.setState({
+			isRequested: true
+		})
+		axios.get(util.format('https://wpcrawlapi.herokuapp.com/%s/%s%s/%s', 
+				this.state.selectedWebsite , this.state.inputWebsite, 1, padding
+			))
+		.then((response) => {
+			var newArray = this.state.importedWebsites.slice();    
+			newArray.push(response.data.title);   
+			this.setState({
+				importedWebsites:newArray,
+				isRequested: false
+			})
+			console.log(this.state.importedWebsites);
+			console.log(util.format('https://wpcrawlapi.herokuapp.com/%s/%s%s/%s', 
+			this.state.selectedWebsite , this.state.inputWebsite, this.state.howMany, padding
+		));
+		}).catch(function (error) {
+			console.log(error);
+		});
 	}
 
+
   render() {	
+		
 		const aimWebsites = [
 			"yoldaolmak.com",
 			'techcrunch.com',
@@ -100,30 +152,34 @@ class Importer extends Component {
 			"limenya.com"
 		]
 
-		const myWebsites = [
-			"paracepte.net",
-			"sporttr.org",
-			"wikiistanbul.com",
-			"bir10.com",
-			"nolur.net",
-		]
+	
+		const apiAdress = "https://wpcrawlapi.herokuapp.com/";
 
-
-		const apiAdress = "https://wpcrawlapi.herokuapp.com/nolur.net/webrazzi.com/7/1";
-
-
-    return (
+	  return (
       <div className="content">
         <Grid fluid>
 					<Row>
-						<Col md={4}>
+						<Col md={5}>
 							<h1>{this.state.selectedWebsite}</h1>
 							<form>
 									<FormControl type="text" onChange={this.handleInputValue} onKeyPress={this._handleKeyPress} placeholder="Input Website" value={this.state.inputWebsite}/>
 							</form>
+
+							<Col md={6}>
+							<form>
+									<FormControl type="number" onChange={this.handleHowMany} placeholder="How Many Content?" value={this.state.howMany}/>
+							</form>
+							</Col>
+
+							<Col md={6}>
+							<form>
+									<FormControl type="number" onChange={this.handlePadding} placeholder="Padding" value={this.state.padding}/>
+							</form>
+							</Col>
 							
+							<br/>
 							{this.displayAlert()}
-							
+
 							<DropdownButton
 									bsStyle="default"
 									title={this.state.selectedWebsite === '' ? "Website":this.state.selectedWebsite}
@@ -136,26 +192,26 @@ class Importer extends Component {
 								}
 							</DropdownButton>	
 							
-							<Button onClick={this.importable} type="submit">Submit</Button>
+							<Button disabled={this.state.isRequested} onClick={this.importable} type="submit">Submit</Button>
 						</Col>
+
+						
 			
-						<Col md={8}>
-							<Card
-								title="Importer"
-								content={
-									<FormGroup controlId="formControlsTextarea">
-										<ControlLabel>Wordpress Importer</ControlLabel>
-										<FormControl
-											rows="5"
-											componentClass="textarea"
-											bsClass="form-control"
-											placeholder="Here can be your description"
-											defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-										/>
-									</FormGroup>
-									}
-							/>
-						</Col>
+					<Col md={7}>
+						<Card
+							title="Successfuly Imported"
+							category="Successfuly imported posts will be displayed in here."
+							stats="Everything Seems OKAY!"
+							statsIcon="fa pe-7s-like2"
+							content={
+								<div className="table-full-width">
+									<table className="table">
+										<Tasks importedWebsites={this.state.importedWebsites}/>
+									</table>
+								</div>
+							}
+						/>
+					</Col>
 					</Row>
         </Grid>
       </div>
