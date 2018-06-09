@@ -3,8 +3,6 @@ import {
   Grid,
   Row,
   Col,
-  FormGroup,
-  ControlLabel,
 	FormControl,
 	DropdownButton,
 	MenuItem,
@@ -12,16 +10,9 @@ import {
 } from "react-bootstrap";
 
 import { Card } from "components/Card/Card.jsx";
-import { FormInputs } from "components/FormInputs/FormInputs.jsx";
-import { UserCard } from "components/UserCard/UserCard.jsx";
 import Button from "components/CustomButton/CustomButton.jsx";
-
-import avatar from "assets/img/faces/face-3.jpg";
 import axios from 'axios';
-
 import { Tasks } from "components/Tasks/Tasks.jsx";
-
-
 import {myWebsites} from '../../myData/myWebsites';
 import checkIfValidInput from '../../helpers/checkIfValidInput';
 
@@ -38,7 +29,8 @@ class Importer extends Component {
 			isRequested: false,
 			howMany: '',
 			padding: '',
-			importedWebsites: []
+			importedWebsites: [],
+			responseToDisplay: ''
 		};
 	}
 
@@ -49,12 +41,25 @@ class Importer extends Component {
 		})
 	}
 
+	clearItems = (event) =>{
+		this.setState({importedWebsites: []});
+	}
+
+	displayAlert = () => {
+		return (
+			this.state.isAlert ? 
+			<Alert bsStyle="danger">
+				<span>Please Enter A valid Adress</span>
+			</Alert> : null
+		)
+	}
+
 	handleInputValue = (event) => {
-    this.setState({inputWebsite: event.target.value});
+    	this.setState({inputWebsite: event.target.value});
 	}
 
 	handleHowMany = (event) => {
-    this.setState({howMany: event.target.value});
+    	this.setState({howMany: event.target.value});
 	}
 
 	handlePadding = (event) => {
@@ -70,15 +75,6 @@ class Importer extends Component {
 
 	componentDidMount = () => {
 		
-	}
-
-	displayAlert = () => {
-		return (
-			this.state.isAlert ? 
-			<Alert bsStyle="danger">
-				<span>Please Enter A valid Adress</span>
-			</Alert> : null
-		)
 	}
 
 	importable = () => {
@@ -99,8 +95,8 @@ class Importer extends Component {
 	}
 
 	insertRequests = (i) => {
-		let padding = parseInt(this.state.padding) + parseInt(i);
-		if(i< this.state.howMany) {
+		let padding = parseInt(this.state.padding,10) + parseInt(i,10);
+		if(i < this.state.howMany) {
 			this.makeRequest(padding, (result)=>{
 				console.log(padding);
 				this.insertRequests(i+1);
@@ -110,32 +106,32 @@ class Importer extends Component {
 		}
 	};
 
-	makeRequest = async (padding, callback) => {
+	makeRequest = (padding, callback) => {
 		this.setState({
 			isRequested: true
 		})
 		axios.get(util.format('https://wpcrawlapi.herokuapp.com/%s/%s/%s/%s', 
-				this.state.selectedWebsite , this.state.inputWebsite, 1, padding
-			))
-		.then((response) => {
-			var newArray = this.state.importedWebsites.slice();    
-			newArray.push(response.data.title);   
+			this.state.selectedWebsite , this.state.inputWebsite, 1, padding
+		)).then((response) => {
+			var newArray = this.state.importedWebsites.slice();  
+			if(response.data.title){
+				newArray.push(response.data.title); 
+			}else{
+				newArray.push("Imported Without Thumbnail");
+			}  
 			this.setState({
 				importedWebsites:newArray,
-				isRequested: false
+				isRequested: false,
 			})
 			// console.log(this.state.importedWebsites)
 			console.log(util.format('https://wpcrawlapi.herokuapp.com/%s/%s/%s/%s', 
-			this.state.selectedWebsite , this.state.inputWebsite, 1, padding
-		));
-
-		callback(padding);
+			this.state.selectedWebsite , this.state.inputWebsite, 1, padding));
+			callback(padding);
 		}).catch(function (error) {
 			console.log(error);
 			callback(padding);
 		});
 	}
-
 
   render() {	
 		
@@ -154,8 +150,7 @@ class Importer extends Component {
 			"hwp.com.tr",
 			"limenya.com"
 		]
-
-	
+		
 		const apiAdress = "https://wpcrawlapi.herokuapp.com/";
 
 	  return (
@@ -167,7 +162,7 @@ class Importer extends Component {
 							<form>
 									<FormControl type="text" onChange={this.handleInputValue} onKeyPress={this._handleKeyPress} placeholder="Input Website" value={this.state.inputWebsite}/>
 							</form>
-
+							
 							<Col md={6}>
 							<form>
 									<FormControl type="number" onChange={this.handleHowMany} placeholder="How Many Content?" value={this.state.howMany}/>
@@ -198,8 +193,6 @@ class Importer extends Component {
 							<Button disabled={this.state.isRequested} onClick={this.importable} type="submit">Submit</Button>
 						</Col>
 
-						
-			
 					<Col md={7}>
 						<Card
 							title="Successfuly Imported"
@@ -214,7 +207,12 @@ class Importer extends Component {
 								</div>
 							}
 						/>
+						<Button onClick={this.clearItems}>Clear</Button>
 					</Col>
+					</Row>
+
+					<Row>
+						{this.state.responseToDisplay}
 					</Row>
         </Grid>
       </div>
