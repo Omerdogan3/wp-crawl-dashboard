@@ -26,6 +26,7 @@ class Importer extends Component {
 			inputWebsite: '',
 			inputDisabled: false,
 			isAlert: false,
+			isDone: false,
 			isRequested: false,
 			howMany: '',
 			padding: '',
@@ -43,6 +44,15 @@ class Importer extends Component {
 
 	clearItems = (event) =>{
 		this.setState({importedWebsites: []});
+	}
+
+	displayDone = () => {
+		return (
+			this.state.isDone ? 
+			<Alert bsStyle="success">
+				<span>Imported Successfuly!</span>
+			</Alert> : null
+		)
 	}
 
 	displayAlert = () => {
@@ -102,16 +112,19 @@ class Importer extends Component {
 				this.insertRequests(i+1);
 			});
 		}else{
-			console.log("Done!")
+			this.setState({
+				isDone: true
+			})
 		}
 	};
 
 	makeRequest = (padding, callback) => {
 		this.setState({
-			isRequested: true
+			isRequested: true,
+			isDone: false
 		})
 		axios.get(util.format('https://wpcrawlapi.herokuapp.com/%s/%s/%s/%s', 
-			this.state.selectedWebsite , this.state.inputWebsite, 1, padding
+			this.state.selectedWebsite , this.state.inputWebsite, padding, 1
 		)).then((response) => {
 			var newArray = this.state.importedWebsites.slice();  
 			if(response.data.title){
@@ -125,7 +138,7 @@ class Importer extends Component {
 			})
 			// console.log(this.state.importedWebsites)
 			console.log(util.format('https://wpcrawlapi.herokuapp.com/%s/%s/%s/%s', 
-			this.state.selectedWebsite , this.state.inputWebsite, 1, padding));
+			this.state.selectedWebsite , this.state.inputWebsite, padding, 1));
 			callback(padding);
 		}).catch(function (error) {
 			console.log(error);
@@ -158,6 +171,7 @@ class Importer extends Component {
         <Grid fluid>
 					<Row>
 						<Col md={5}>
+							{this.displayDone()}
 							<h1>{this.state.selectedWebsite}</h1>
 							<form>
 									<FormControl type="text" onChange={this.handleInputValue} onKeyPress={this._handleKeyPress} placeholder="Input Website" value={this.state.inputWebsite}/>
@@ -177,6 +191,8 @@ class Importer extends Component {
 							
 							<br/>
 							{this.displayAlert()}
+
+
 
 							<DropdownButton
 									bsStyle="default"
@@ -208,6 +224,7 @@ class Importer extends Component {
 							}
 						/>
 						<Button onClick={this.clearItems}>Clear</Button>
+						
 					</Col>
 					</Row>
 
