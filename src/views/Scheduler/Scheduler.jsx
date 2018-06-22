@@ -3,7 +3,7 @@ import { Grid, Row, Col } from "react-bootstrap";
 
 import Card from "components/Card/Card.jsx";
 
-class Typography extends Component {
+class Scheduler extends Component {
   render() {
     return (
       <div className="content">
@@ -126,4 +126,4 @@ class Typography extends Component {
   }
 }
 
-export default Typography;
+export default Scheduler;

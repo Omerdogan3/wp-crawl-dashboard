@@ -1,10 +1,9 @@
 import Dashboard from "views/Dashboard/Dashboard";
-import UserProfile from "views/UserProfile/UserProfile";
+import MyWebsites from "views/MyWebsites/MyWebsites";
 import Importer from "views/Importer/Importer";
-import TableList from "views/TableList/TableList";
-import Typography from "views/Typography/Typography";
-import Icons from "views/Icons/Icons";
-import Maps from "views/Maps/Maps";
+import UserLog from "views/UserLog/UserLog";
+import Scheduler from "views/Scheduler/Scheduler";
+import Dataset from "views/Dataset/Dataset";
 import Notifications from "views/Notifications/Notifications";
 import Upgrade from "views/Upgrade/Upgrade";
 
@@ -22,32 +21,28 @@ const dashboardRoutes = [
     component: Importer
   },
   {
-    path: "/user-profile",
-    name: "User Profile",
+    path: "/my-websites",
+    name: "My Websites",
     icon: "pe-7s-user",
-    component: UserProfile
+    component: MyWebsites
   },
-
-
   {
-    path: "/table",
+    path: "/scheduler",
+    name: "Scheduler",
+    icon: "pe-7s-clock",
+    component: Scheduler
+  },
+  {
+    path: "/userlog",
     name: "User Log",
     icon: "pe-7s-note2",
-    component: TableList
+    component: UserLog
   },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "pe-7s-news-paper",
-    component: Typography
-  },
-  { path: "/icons", name: "Icons", icon: "pe-7s-science", component: Icons },
-  { path: "/maps", name: "Maps", icon: "pe-7s-map-marker", component: Maps },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "pe-7s-bell",
-    component: Notifications
+  { 
+    path: "/dataset", 
+    name: "Dataset", 
+    icon: "pe-7s-server", 
+    component: Dataset 
   },
   {
     upgrade: true,

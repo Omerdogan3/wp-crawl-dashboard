@@ -28,7 +28,7 @@ class Dashboard extends Component {
       <div className="content">
         <Grid fluid>
           <Row>
-            <Col lg={3} sm={6}>
+            <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-ticket text-danger" />}
                 statsText="Account Type"
@@ -36,7 +36,7 @@ class Dashboard extends Component {
                 statsIconText="Buy Premium"
               />
             </Col>
-            <Col lg={3} sm={6}>
+            <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="pe-7s-plus text-success" />}
                 statsText="Imported Today"
@@ -45,16 +45,7 @@ class Dashboard extends Component {
                 statsIconText="Today"
               />
             </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-graph1 text-danger" />}
-                statsText="Errors"
-                statsValue="23"
-                statsIcon={<i className="fa fa-clock-o" />}
-                statsIconText="In the last hour"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
+            <Col lg={4} sm={6}>
               <StatsCard
                 bigIcon={<i className="fa pe-7s-browser text-info" />}
                 statsText="Websites"
