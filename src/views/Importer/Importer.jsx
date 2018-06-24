@@ -16,6 +16,8 @@ import { Tasks } from "components/Tasks/Tasks.jsx";
 import {myWebsites} from '../../myData/myWebsites';
 import checkIfValidInput from '../../helpers/checkIfValidInput';
 
+import {importedToday} from '../../myData/myWebsites';
+
 const util = require('util');
 
 class Importer extends Component {
@@ -108,7 +110,7 @@ class Importer extends Component {
 		let padding = parseInt(this.state.padding,10) + parseInt(i,10);
 		if(i < this.state.howMany) {
 			this.makeRequest(padding, (result)=>{
-				console.log(padding);
+				
 				this.insertRequests(i+1);
 			});
 		}else{
@@ -201,7 +203,7 @@ class Importer extends Component {
 									id={`dropdown-basic-${0}`}
 								>{	
 									myWebsites.map((item, i) => {
-										return <MenuItem  onClick={() => this.selectedWebsite(item)} key={i} eventKey={i}>{item}</MenuItem>
+										return <MenuItem  onClick={() => this.selectedWebsite(item.name)} key={i} eventKey={i}>{item.name}</MenuItem>
 									})
 								}
 							</DropdownButton>	

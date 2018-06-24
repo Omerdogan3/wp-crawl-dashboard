@@ -5,6 +5,8 @@ import { Grid, Row, Col } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 
+import {myWebsites, importedToday} from '../../myData/myWebsites';
+
 import {
   optionsSales,
   dataSales,
@@ -40,7 +42,7 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="pe-7s-plus text-success" />}
                 statsText="Imported Today"
-                statsValue="15"
+                statsValue={importedToday}
                 statsIcon={<i className="fa fa-calendar-o" />}
                 statsIconText="Today"
               />
@@ -49,7 +51,7 @@ class Dashboard extends Component {
               <StatsCard
                 bigIcon={<i className="fa pe-7s-browser text-info" />}
                 statsText="Websites"
-                statsValue="12"
+                statsValue={myWebsites.length}
                 statsIcon={<i className="fa fa-plus" />}
                 statsIconText="Add More Websites"
               />

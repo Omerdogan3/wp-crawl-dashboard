@@ -15,7 +15,97 @@ import Button from "components/CustomButton/CustomButton.jsx";
 
 import avatar from "assets/img/faces/face-3.jpg";
 
-class UserProfile extends Component {
+import {myWebsites} from '../../myData/myWebsites';
+
+class MyWebsites extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      myWebsites: [],
+      fetched: false
+    }
+    this.removeWebsite = this.removeWebsite.bind(this);
+    this.displayWebsites = this.displayWebsites.bind(this);
+}
+  
+
+
+  componentDidMount(){
+    this.setState({
+      myWebsites,
+      fetched: true
+    });
+    
+  }
+
+  addWebsiteInput(){
+    return  <Row>
+    <Col xs={9}>
+      <FormInputs 
+        ncols={["col-md-12"]}
+        proprieties={[
+          {
+            label: "Add New Website",
+            type: "text",
+            bsClass: "form-control",
+            placeholder: "Website Adress",
+            defaultValue: ""
+          }
+        ]}
+      />
+    </Col>
+
+    <Col style={{marginTop: 20}} componentClass={ControlLabel} xs={3}>
+      <Button fill round>
+          Add 
+      </Button> 
+    </Col>
+    </Row>
+  }
+
+
+  removeWebsite(event){
+    var array = myWebsites;
+    array.splice(event.currentTarget.dataset.id, 1);
+    this.setState({
+      myWebsites: array
+    });
+  }
+
+  displayWebsites(){
+    return <div>
+      {this.state.myWebsites.map((item,index)=>{
+        return <div key={index}> 
+          <Row>
+          <Col xs={9}>
+            <FormInputs 
+              ncols={["col-md-12"]}
+              proprieties={[
+                {
+                  label: index+1,
+                  type: "text",
+                  bsClass: "form-control",
+                  placeholder: "Website Adress",
+                  defaultValue: item.name
+                }
+              ]}
+            />
+          </Col>
+      
+          <Col style={{marginTop: 20}} componentClass={ControlLabel} xs={3}>
+            <Button key={index} data-id={index} fill onClick={this.removeWebsite}>
+                Remove 
+            </Button> 
+          </Col>                        
+        </Row>    
+      </div>
+        
+    })}
+    {this.addWebsiteInput()}
+    </div>
+  }
+
+
   render() {
     return (
       <div className="content">
@@ -23,144 +113,18 @@ class UserProfile extends Component {
           <Row>
             <Col md={8}>
               <Card
-                title="Edit Profile"
+                title="My Websites"
                 content={
-                  <form>
-                    <FormInputs
-                      ncols={["col-md-5", "col-md-3", "col-md-4"]}
-                      proprieties={[
-                        {
-                          label: "Company (disabled)",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Company",
-                          defaultValue: "Creative Code Inc.",
-                          disabled: true
-                        },
-                        {
-                          label: "Username",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Username",
-                          defaultValue: "michael23"
-                        },
-                        {
-                          label: "Email address",
-                          type: "email",
-                          bsClass: "form-control",
-                          placeholder: "Email"
-                        }
-                      ]}
-                    />
-                    <FormInputs
-                      ncols={["col-md-6", "col-md-6"]}
-                      proprieties={[
-                        {
-                          label: "First name",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "First name",
-                          defaultValue: "Mike"
-                        },
-                        {
-                          label: "Last name",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Last name",
-                          defaultValue: "Andrew"
-                        }
-                      ]}
-                    />
-                    <FormInputs
-                      ncols={["col-md-12"]}
-                      proprieties={[
-                        {
-                          label: "Adress",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Home Adress",
-                          defaultValue:
-                            "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                        }
-                      ]}
-                    />
-                    <FormInputs
-                      ncols={["col-md-4", "col-md-4", "col-md-4"]}
-                      proprieties={[
-                        {
-                          label: "City",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "City",
-                          defaultValue: "Mike"
-                        },
-                        {
-                          label: "Country",
-                          type: "text",
-                          bsClass: "form-control",
-                          placeholder: "Country",
-                          defaultValue: "Andrew"
-                        },
-                        {
-                          label: "Postal Code",
-                          type: "number",
-                          bsClass: "form-control",
-                          placeholder: "ZIP Code"
-                        }
-                      ]}
-                    />
+                  this.displayWebsites()
+                }
+              /> 
+              
+              
 
-                    <Row>
-                      <Col md={12}>
-                        <FormGroup controlId="formControlsTextarea">
-                          <ControlLabel>About Me</ControlLabel>
-                          <FormControl
-                            rows="5"
-                            componentClass="textarea"
-                            bsClass="form-control"
-                            placeholder="Here can be your description"
-                            defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Button bsStyle="info" pullRight fill type="submit">
-                      Update Profile
-                    </Button>
-                    <div className="clearfix" />
-                  </form>
-                }
-              />
             </Col>
+            
             <Col md={4}>
-              <UserCard
-                bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"
-                avatar={avatar}
-                name="Mike Andrew"
-                userName="michael24"
-                description={
-                  <span>
-                    "Lamborghini Mercy
-                    <br />
-                    Your chick she so thirsty
-                    <br />
-                    I'm in that two seat Lambo"
-                  </span>
-                }
-                socials={
-                  <div>
-                    <Button simple>
-                      <i className="fa fa-facebook-square" />
-                    </Button>
-                    <Button simple>
-                      <i className="fa fa-twitter" />
-                    </Button>
-                    <Button simple>
-                      <i className="fa fa-google-plus-square" />
-                    </Button>
-                  </div>
-                }
-              />
+              
             </Col>
           </Row>
         </Grid>
@@ -169,4 +133,4 @@ class UserProfile extends Component {
   }
 }
 
-export default UserProfile;
+export default MyWebsites;
